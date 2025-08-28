@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meine Seite</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:0;padding:24px}
+    .muted{color:#666}
+    a{color:inherit}
+  </style>
+</head>
+<body>
+  <h1 id="title">Hallo 👋</h1>
+  <p class="muted">Deine „Custom-Adresse“ ist die URL <code>#</code> hinter dem Link.
+    Beispiel: <code>#meineseite</code> → <span id="url"></span></p>
+
+  <p>
+    <strong>Deine Links:</strong><br>
+    • Start: <a href="#meineseite">#meineseite</a><br>
+    • Kontakt: <a href="#meineseite/kontakt">#meineseite/kontakt</a><br>
+    • Projekte: <a href="#meineseite/projekte">#meineseite/projekte</a>
+  </p>
+
+  <hr>
+  <div id="view"></div>
+
+  <script>
+    // Wähle hier deinen Basis-Slug (= „Custom-Adresse“ nach #)
+    const BASE = "meineseite"; // <-- ändere zu deinem Wunsch, z.B. "max" oder "studio-xy"
+
+    // Wenn kein Hash gesetzt ist, auf deinen Slug setzen
+    if (!location.hash) {
+      location.replace("#" + BASE);
+    }
+
+    function render() {
+      const hash = location.hash.replace(/^#/, "");
+      const parts = hash.split("/");            // z.B. ["meineseite","kontakt"]
+      const root = parts[0] || BASE;
+      const sub  = parts[1] || "start";
+
+      // URL-Vorschau
+      const u = (location.origin + location.pathname + "#" + hash).replace(/index\.html$/, "");
+      document.getElementById("url").textContent = u;
+
+      // Einfache Routenanzeige
+      const view = document.getElementById("view");
+      let html = "";
+      if (root !== BASE) {
+        html += `<p class="muted">Hinweis: Du nutzt „#${root}“. Basis ist „#${BASE}“.</p>`;
+      }
+      if (sub === "start") {
+        html += `<h2>Start</h2><p>Dies ist deine Startseite unter <code>#${root}</code>.</p>`;
+      } else if (sub === "kontakt") {
+        html += `<h2>Kontakt</h2><p>Mail: <a href="mailto:du@example.com">du@example.com</a></p>`;
+      } else if (sub === "projekte") {
+        html += `<h2>Projekte</h2><ul><li>Projekt A</li><li>Projekt B</li></ul>`;
+      } else {
+        html += `<h2>${sub}</h2><p>Eigene Unterseite unter <code>#${root}/${sub}</code>.</p>`;
+      }
+      view.innerHTML = html;
+
+      // Überschrift dynamisch
+      document.getElementById("title").textContent = "Meine Seite – #" + root + (sub ? "/" + sub : "");
+    }
+
+    window.addEventListener("hashchange", render);
+    render();
+  </script>
+</body>
+</html>
